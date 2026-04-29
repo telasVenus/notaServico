@@ -9,7 +9,7 @@
 	let contato = $state('');
 	let subDescricao = $state('');
 	let nomeTitular = $state('');
-	let cpf = $state('');
+	let cnpj = $state('');
 	let banco = $state('');
 	let agencia = $state('');
 	let conta = $state('');
@@ -25,7 +25,7 @@
 		contato = metadata.dadosEmpresa.contato;
 		subDescricao = metadata.dadosEmpresa.subDescricao;
 		nomeTitular = metadata.dadosConta.nome;
-		cpf = metadata.dadosConta.cpf;
+		cnpj = metadata.dadosConta.cnpj;
 		banco = metadata.dadosConta.banco;
 		agencia = metadata.dadosConta.agencia;
 		conta = metadata.dadosConta.conta;
@@ -81,7 +81,7 @@
 			},
 			dadosConta: {
 				nome: nomeTitular,
-				cpf,
+				cnpj,
 				banco,
 				agencia,
 				conta
@@ -196,13 +196,13 @@
 						</div>
 
 						<div>
-							<label for="cpf" class="mb-1 block text-sm font-semibold text-gray-700"> CPF </label>
+							<label for="cnpj" class="mb-1 block text-sm font-semibold text-gray-700"> CNPJ </label>
 							<input
-								id="cpf"
+								id="cnpj"
 								type="text"
-								bind:value={cpf}
+								bind:value={cnpj}
 								class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
-								placeholder="Ex: 123.456.789-00"
+								placeholder="Ex: 12.345.678/0001-90"
 							/>
 						</div>
 

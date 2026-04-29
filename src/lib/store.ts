@@ -93,15 +93,15 @@ export function getMetadataDefault(): Metadata {
 			subDescricao: 'Serviços de qualidade para você'
 		},
 		dadosConta: {
-			nome: 'João da Silva',
-			cpf: '123.456.789-00',
-			banco: 'Banco do Brasil',
-			agencia: '1234',
-			conta: '56789-0'
+			nome: 'JJR PRODUTOS SIDERURGICOS LTDA',
+			cnpj: '59.519.865/0001-01',
+			banco: 'STONE PAGAMENTOS S.A.',
+			agencia: '0001',
+			conta: '64147824-3'
 		},
 		chavesPix: [
-			{ tipo: 'CPF', chave: '123.456.789-00' },
-			{ tipo: 'E-mail', chave: 'joao.silva@example.com' }
+			{ tipo: 'CNPJ', chave: '59.519.865/0001-01' },
+			{ tipo: 'E-mail', chave: 'vendas@telasvenus.com.br' }
 		]
 	};
 }

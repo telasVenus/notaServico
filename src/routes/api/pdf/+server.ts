@@ -29,7 +29,7 @@ interface DadosEmpresa {
 
 interface DadosConta {
 	nome: string;
-	cpf: string;
+	cnpj: string;
 	banco: string;
 	agencia: string;
 	conta: string;
@@ -308,13 +308,13 @@ export async function POST({ request }) {
 			footerY -= 14;
 		}
 
-		// CPF
-		if (metadata.dadosConta.cpf) {
-			const cpfFormatado = metadata.dadosConta.cpf.replace(
-				/(\d{3})(\d{3})(\d{3})(\d{2})/,
-				'$1.$2.$3-$4'
+		// CNPJ
+		if (metadata.dadosConta.cnpj) {
+			const cnpjFormatado = metadata.dadosConta.cnpj.replace(
+				/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
+				'$1.$2.$3/$4-$5'
 			);
-			drawText(`CPF: ${cpfFormatado}`, 50, footerY, {
+			drawText(`CNPJ: ${cnpjFormatado}`, 50, footerY, {
 				size: 9,
 				color: rgb(0.3, 0.3, 0.3)
 			});

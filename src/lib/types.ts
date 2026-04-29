@@ -16,7 +16,7 @@ export interface DadosEmpresa {
 
 export interface DadosConta {
 	nome: string;
-	cpf: string;
+	cnpj: string;
 	banco: string;
 	agencia: string;
 	conta: string;
