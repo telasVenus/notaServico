@@ -32,7 +32,7 @@ Acesse via botão de engrenagem no canto superior direito para configurar:
 
 #### 💳 Dados da Conta Bancária
 - Nome do titular
-- CPF (formatado automaticamente no PDF)
+- CPF (formatado automaticamente no PDF) 
 - Nome do banco
 - Agência
 - Número da conta
