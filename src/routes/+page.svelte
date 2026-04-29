@@ -200,7 +200,7 @@ function selecionarClienteCombobox(cliente: Cliente) {
     telefoneCliente = cliente.telefone;
     buscaCliente = cliente.nome;
     mostrarSugestoes = false;
-}
+} 
 
 function limparSelecaoCliente() {
     buscaCliente = '';
