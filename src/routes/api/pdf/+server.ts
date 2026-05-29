@@ -2,7 +2,9 @@
 // src/routes/api/pdf/+server.ts
 // ================================
 
+import { readFileSync } from 'fs';
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type Color } from 'pdf-lib';
+import { join } from 'path';
 
 interface Cliente {
 	nome: string;
@@ -62,6 +64,16 @@ export async function POST({ request }) {
 
 	let currentY = height - 50;
 
+	// Carregar logo
+	let logoImage = null;
+	try {
+		const logoPath = join(process.cwd(), 'static', 'logo.png');
+		const logoBytes = readFileSync(logoPath);
+		logoImage = await pdfDoc.embedPng(logoBytes);
+	} catch (e) {
+		console.warn('Logo não encontrada, continuando sem logo.');
+	}
+
 	// Função auxiliar para desenhar texto
 	const drawText = (
 		text: string,
@@ -108,28 +120,36 @@ export async function POST({ request }) {
 	};
 
 	// === CABEÇALHO ===
-	// Título
-	drawRectangle(50, currentY - 30, width - 100, 30, { r: 0.2, g: 0.4, b: 0.8 });
-	drawText('COMPROVANTE', width / 2 - 70, currentY - 18, {
-		font: fontBold,
-		size: 18,
-		color: rgb(1, 1, 1)
-	});
-	currentY -= 50;
+drawRectangle(50, currentY - 30, width - 100, 30, { r: 0.2, g: 0.4, b: 0.8 });
+drawText('COMPROVANTE', width / 2 - 50, currentY - 18, {
+    font: fontBold,
+    size: 18,
+    color: rgb(1, 1, 1)
+});
+currentY -= 50;
 
-	// Informações do prestador
-	drawText(metadata.dadosEmpresa.nomeEmpresa, 50, currentY, {
-		font: fontBold,
-		size: 12
-	});
-	currentY -= 20;
-	drawText(`Contato: ${metadata.dadosEmpresa.contato}`, 50, currentY, { size: 11 });
-	currentY -= 20;
-	drawText(`Data da venda: ${dataVenda}`, 50, currentY, {
-		font: fontBold,
-		size: 11
-	});
-	currentY -= 35;
+// Logo + nome da empresa lado a lado
+if (logoImage) {
+    const logoDims = logoImage.scaleToFit(50, 50);
+    page.drawImage(logoImage, {
+        x: 50,
+        y: currentY - logoDims.height,
+        width: logoDims.width,
+        height: logoDims.height
+    });
+    // Nome da empresa deslocado para direita da logo
+    drawText(metadata.dadosEmpresa.nomeEmpresa, 50 + logoDims.width + 10, currentY - 15, {
+        font: fontBold,
+        size: 12
+    });
+    currentY -= Math.max(logoDims.height, 20) + 10;
+} else {
+    drawText(metadata.dadosEmpresa.nomeEmpresa, 50, currentY, {
+        font: fontBold,
+        size: 12
+    });
+    currentY -= 20;
+}
 
 	// === DADOS DO CLIENTE ===
 	if (cliente) {
