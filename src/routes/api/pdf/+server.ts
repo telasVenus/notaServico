@@ -44,12 +44,13 @@ interface Metadata {
 export async function POST({ request }) {
 	const body = await request.json();
 
-	const { dataServico, itens, valorTotal, metadata, cliente } = body as {
+	const { dataServico, itens, valorTotal, metadata, cliente, entrada } = body as {
 		dataServico: string;
 		cliente: Cliente;
 		itens: ItemServico[];
 		valorTotal: number;
 		metadata: Metadata;
+		entrada: number | null;
 	};
 
 	const pdfDoc = await PDFDocument.create();
@@ -260,32 +261,58 @@ export async function POST({ request }) {
 		currentY = itemY;
 	});
 
-	// === LINHA DO TOTAL ===
-	const totalY = currentY - rowHeight - 5;
+// === LINHA DO TOTAL ===
+const totalY = currentY - rowHeight - 5;
 
-	// Fundo do total
-	drawRectangle(50, totalY, colDescWidth, rowHeight, { r: 0.85, g: 0.92, b: 1 });
-	drawRectangle(50 + colDescWidth, totalY, colValorWidth, rowHeight, { r: 0.85, g: 0.92, b: 1 });
+// Fundo do total
+drawRectangle(50, totalY, colDescWidth, rowHeight, { r: 0.85, g: 0.92, b: 1 });
+drawRectangle(50 + colDescWidth, totalY, colValorWidth, rowHeight, { r: 0.85, g: 0.92, b: 1 });
 
-	// Bordas do total
-	drawRectangle(50, totalY, colDescWidth, rowHeight, { r: 0.6, g: 0.6, b: 0.6 }, false, 0.8);
-	drawRectangle(
-		50 + colDescWidth,
-		totalY,
-		colValorWidth,
-		rowHeight,
-		{ r: 0.6, g: 0.6, b: 0.6 },
-		false,
-		0.8
-	);
+// Bordas do total
+drawRectangle(50, totalY, colDescWidth, rowHeight, { r: 0.6, g: 0.6, b: 0.6 }, false, 0.8);
+drawRectangle(50 + colDescWidth, totalY, colValorWidth, rowHeight, { r: 0.6, g: 0.6, b: 0.6 }, false, 0.8);
 
-	// Texto do total
-	drawText('VALOR TOTAL', 60, totalY + 8, { font: fontBold, size: 11 });
-	drawText(`R$ ${formatarValor(valorTotal)}`, 50 + colDescWidth + 30, totalY + 8, {
-		font: fontBold,
-		size: 12,
-		color: rgb(0.1, 0.3, 0.7)
-	});
+drawText('VALOR TOTAL', 60, totalY + 8, { font: fontBold, size: 11 });
+drawText(`R$ ${formatarValor(valorTotal)}`, 50 + colDescWidth + 30, totalY + 8, {
+    font: fontBold,
+    size: 12,
+    color: rgb(0.1, 0.3, 0.7)
+});
+
+currentY = totalY;
+
+// === ENTRADA E SALDO (só se houver entrada) ===
+if (entrada && entrada > 0) {
+    const saldoRestante = valorTotal - entrada;
+
+    // Linha de entrada
+    const entradaY = currentY - rowHeight;
+    drawRectangle(50, entradaY, colDescWidth, rowHeight, { r: 0.95, g: 1, b: 0.95 });
+    drawRectangle(50 + colDescWidth, entradaY, colValorWidth, rowHeight, { r: 0.95, g: 1, b: 0.95 });
+    drawRectangle(50, entradaY, colDescWidth, rowHeight, { r: 0.6, g: 0.7, b: 0.6 }, false, 0.8);
+    drawRectangle(50 + colDescWidth, entradaY, colValorWidth, rowHeight, { r: 0.6, g: 0.7, b: 0.6 }, false, 0.8);
+    drawText('ENTRADA', 60, entradaY + 8, { font: fontBold, size: 11 });
+    drawText(`- R$ ${formatarValor(entrada)}`, 50 + colDescWidth + 30, entradaY + 8, {
+        font: fontBold,
+        size: 12,
+        color: rgb(0.1, 0.6, 0.2)
+    });
+
+    // Linha de saldo restante
+    const saldoY = entradaY - rowHeight;
+    drawRectangle(50, saldoY, colDescWidth, rowHeight, { r: 1, g: 0.95, b: 0.88 });
+    drawRectangle(50 + colDescWidth, saldoY, colValorWidth, rowHeight, { r: 1, g: 0.95, b: 0.88 });
+    drawRectangle(50, saldoY, colDescWidth, rowHeight, { r: 0.8, g: 0.6, b: 0.4 }, false, 0.8);
+    drawRectangle(50 + colDescWidth, saldoY, colValorWidth, rowHeight, { r: 0.8, g: 0.6, b: 0.4 }, false, 0.8);
+    drawText('SALDO RESTANTE', 60, saldoY + 8, { font: fontBold, size: 11 });
+    drawText(`R$ ${formatarValor(saldoRestante)}`, 50 + colDescWidth + 30, saldoY + 8, {
+        font: fontBold,
+        size: 12,
+        color: rgb(0.7, 0.3, 0.1)
+    });
+
+    currentY = saldoY;
+}
 
 	// === RODAPÉ ===
 	let footerY = 110;

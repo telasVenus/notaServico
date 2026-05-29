@@ -48,8 +48,14 @@
 					c.nome.toLowerCase().includes(buscaCliente.toLowerCase())
 				).slice(0, 8)
 	);
-
+	let valorEntrada = $state('');
+	let valorEntradaNumerico = $derived(() => {
+		const v = parseFloat(valorEntrada.replace(',', '.'));
+		return isNaN(v) || v < 0 ? 0 : v;
+	});
 	let valorTotal = $derived(itensPreDefinidos.reduce((acc, item) => acc + item.valor, 0));
+	let saldoRestante = $derived(valorTotal - valorEntradaNumerico());
+
 
 	const reCarregarItens = () => {
 		itens = carregarItens().map((item, index) => ({ ...item, id: index + 1 }));
@@ -147,10 +153,6 @@
 		novoValor = '';
 		servicoSelecionado = '';
 	}
-
-// 	const reCarregarClientes = () => {
-// 	clientes = carregarClientes().map((c, index) => ({ ...c, id: index + 1 }));
-// };
 
 const carregarClientesSheets = async () => {
     try {
@@ -266,7 +268,8 @@ function limparSelecaoCliente() {
 					nome: nomeCliente,
 					telefone: telefoneCliente,
 					pago: pagamentoEfetuado
-				}
+				},
+				entrada: valorEntradaNumerico() > 0 ? valorEntradaNumerico() : null
 			})
 		});
 
@@ -287,6 +290,7 @@ function limparSelecaoCliente() {
 		// clean nos itens pré-definidos para evitar que sejam re-adicionados ao gerar o PDF
 		itensPreDefinidos = [];
 		salvarItensPreDefinidos([]);
+		valorEntrada = '';
 	}
 
 	let viewItenssalvos = $state(false);
@@ -493,7 +497,7 @@ function limparSelecaoCliente() {
 				bind:value={novoTelefoneCliente}
 				onkeypress={(e) => e.key === 'Enter' && adicionarCliente()}
 				class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-purple-500"
-				placeholder="Ex: (21) 99999-9999"
+				placeholder="Ex: (31) 99999-9999"
 			/>
 		</div>
 	</div>
@@ -861,6 +865,42 @@ function limparSelecaoCliente() {
 					</div>
 				{/if}
 				</div>
+
+				<!-- Entrada -->
+				{#if itensPreDefinidos.length > 0}
+						<div class="rounded-xl border border-orange-100 bg-orange-50 p-4">
+								<h2 class="mb-3 text-lg font-bold text-gray-800">Entrada (opcional)</h2>
+								<div class="mb-3">
+										<label for="valorEntrada" class="mb-1 block text-sm font-semibold text-gray-700">
+												Valor de Entrada (R$)
+										</label>
+										<input
+												id="valorEntrada"
+												type="text"
+												bind:value={valorEntrada}
+												class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-orange-500"
+												placeholder="Ex: 50,00"
+										/>
+								</div>
+
+								{#if valorEntradaNumerico() > 0}
+										<div class="rounded-lg border border-orange-200 bg-white p-3">
+												<div class="flex justify-between text-sm text-gray-600">
+														<span>Valor Total:</span>
+														<span>R$ {formatarValor(valorTotal)}</span>
+												</div>
+												<div class="flex justify-between text-sm text-green-700">
+														<span>Entrada:</span>
+														<span>- R$ {formatarValor(valorEntradaNumerico())}</span>
+												</div>
+												<div class="mt-2 flex justify-between border-t border-orange-200 pt-2 font-bold text-orange-700">
+														<span>Saldo Restante:</span>
+														<span>R$ {formatarValor(saldoRestante)}</span>
+												</div>
+										</div>
+								{/if}
+						</div>
+				{/if}
 
 				<!-- Botão Gerar PDF -->
 				<button

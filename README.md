@@ -343,12 +343,6 @@ Este projeto está configurado para deploy na Vercel com o adapter já instalado
 ```sh
 npm run build
 ```
-
-## 📞 Contato
-
-Tec. Informática - Paulo Bruno Soares  
-Telefone: (21) 99803-0152
-
 ---
 
 Desenvolvido com ❤️ usando SvelteKit

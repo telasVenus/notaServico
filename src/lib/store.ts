@@ -88,8 +88,8 @@ export function getMetadataDefault(): Metadata {
 	// Gerar dados mock para a metadata
 	return {
 		dadosEmpresa: {
-			nomeEmpresa: 'Minha Empresa LTDA',
-			contato: '(11) 1234-5678',
+			nomeEmpresa: 'JJR PRODUTOS SIDERURGICOS LTDA',
+			contato: '(31) 98835-345',
 			subDescricao: 'Serviços de qualidade para você'
 		},
 		dadosConta: {
@@ -97,7 +97,7 @@ export function getMetadataDefault(): Metadata {
 			cnpj: '59.519.865/0001-01',
 			banco: 'STONE PAGAMENTOS S.A.',
 			agencia: '0001',
-			conta: '64147824-3'
+			conta: '64147824-3453'
 		},
 		chavesPix: [
 			{ tipo: 'CNPJ', chave: '59.519.865/0001-01' },
