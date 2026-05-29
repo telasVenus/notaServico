@@ -1,19 +1,19 @@
-import type { ItemServico, Metadata, BackupData, RestoreOptions, RestoreResult, Cliente } from './types';
+import type { ItemVenda, Metadata, BackupData, RestoreOptions, RestoreResult, Cliente } from './types';
 
-const ITENS_KEY = 'ordem-servicos-itens';
-const ITENS_PREDEFINIDOS_KEY = 'ordem-servicos-itens-predefinidos';
-const METADATA_KEY = 'ordem-servicos-metadata';
+const ITENS_KEY = 'venda-itens';
+const ITENS_PREDEFINIDOS_KEY = 'venda-itens-predefinidos';
+const METADATA_KEY = 'venda-metadata';
 const BACKUP_VERSION = '1.0.0';
-const CLIENTES_KEY = 'ordem-servicos-clientes';
+const CLIENTES_KEY = 'venda-clientes';
 
 // Funções para gerenciar itens
-export function salvarItens(itens: ItemServico[]): void {
+export function salvarItens(itens: ItemVenda[]): void {
 	if (typeof window !== 'undefined') {
 		localStorage.setItem(ITENS_KEY, JSON.stringify(itens));
 	}
 }
 
-export function carregarItens(): ItemServico[] {
+export function carregarItens(): ItemVenda[] {
 	if (typeof window !== 'undefined') {
 		const data = localStorage.getItem(ITENS_KEY);
 		return data ? JSON.parse(data) : [];
@@ -28,13 +28,13 @@ export function limparItens(): void {
 }
 
 // Funções para gerenciar itens pré-definidos
-export function salvarItensPreDefinidos(itens: ItemServico[]): void {
+export function salvarItensPreDefinidos(itens: ItemVenda[]): void {
 	if (typeof window !== 'undefined') {
 		localStorage.setItem(ITENS_PREDEFINIDOS_KEY, JSON.stringify(itens));
 	}
 }
 
-export function carregarItensPreDefinidos(): ItemServico[] {
+export function carregarItensPreDefinidos(): ItemVenda[] {
 	if (typeof window !== 'undefined') {
 		const data = localStorage.getItem(ITENS_PREDEFINIDOS_KEY);
 		return data ? JSON.parse(data) : [];
@@ -129,7 +129,7 @@ export function exportarBackup(): void {
 	const link = document.createElement('a');
 	const dataFormatada = new Date().toISOString().split('T')[0];
 	link.href = url;
-	link.download = `backup-nota-servicos-${dataFormatada}.json`;
+	link.download = `backup-comprovante-${dataFormatada}.json`;
 	link.click();
 
 	URL.revokeObjectURL(url);

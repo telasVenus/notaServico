@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nota-servico-v2'; // Incrementado para invalidar cache antigo
+const CACHE_NAME = 'comprovante-v2'; // Incrementado para invalidar cache antigo
 const urlsToCache = ['/manifest.json'];
 
 // Instalação do Service Worker

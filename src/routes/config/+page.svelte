@@ -37,7 +37,7 @@
 
 		// Listener para mudanças no localStorage (backup restaurado em outra aba)
 		const handleStorageChange = (e: StorageEvent) => {
-			if (e.key === 'ordem-servicos-metadata') {
+			if (e.key === 'comprovante-metadata') {
 				recarregarDados();
 			}
 		};

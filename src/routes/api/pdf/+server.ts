@@ -10,7 +10,7 @@ interface Cliente {
 	pago: boolean;
 }
 
-interface ItemServico {
+interface ItemVendido {
 	id: number;
 	descricao: string;
 	valor: number;
@@ -44,10 +44,10 @@ interface Metadata {
 export async function POST({ request }) {
 	const body = await request.json();
 
-	const { dataServico, itens, valorTotal, metadata, cliente, entrada } = body as {
-		dataServico: string;
+	const { dataVenda, itens, valorTotal, metadata, cliente, entrada } = body as {
+		dataVenda: string;
 		cliente: Cliente;
-		itens: ItemServico[];
+		itens: ItemVendido[];
 		valorTotal: number;
 		metadata: Metadata;
 		entrada: number | null;
@@ -110,7 +110,7 @@ export async function POST({ request }) {
 	// === CABEÇALHO ===
 	// Título
 	drawRectangle(50, currentY - 30, width - 100, 30, { r: 0.2, g: 0.4, b: 0.8 });
-	drawText('NOTA DE SERVIÇO', width / 2 - 70, currentY - 18, {
+	drawText('COMPROVANTE', width / 2 - 70, currentY - 18, {
 		font: fontBold,
 		size: 18,
 		color: rgb(1, 1, 1)
@@ -125,7 +125,7 @@ export async function POST({ request }) {
 	currentY -= 20;
 	drawText(`Contato: ${metadata.dadosEmpresa.contato}`, 50, currentY, { size: 11 });
 	currentY -= 20;
-	drawText(`Data do Serviço: ${dataServico}`, 50, currentY, {
+	drawText(`Data da venda: ${dataVenda}`, 50, currentY, {
 		font: fontBold,
 		size: 11
 	});
@@ -176,7 +176,7 @@ export async function POST({ request }) {
 	drawRectangle(50, currentY, width - 100, 1, { r: 0.7, g: 0.7, b: 0.7 });
 	currentY -= 30;
 
-	// === TABELA DE SERVIÇOS ===
+	// === TABELA DE PRODUTOS ===
 	// Cabeçalho da tabela
 	const tableTop = currentY;
 	const rowHeight = 25;
@@ -212,7 +212,7 @@ export async function POST({ request }) {
 	);
 
 	// Textos do cabeçalho
-	drawText('Descrição do Serviço', 60, tableTop - rowHeight + 8, {
+	drawText('Descrição do Produto', 60, tableTop - rowHeight + 8, {
 		font: fontBold,
 		size: 10
 	});
@@ -397,7 +397,7 @@ if (entrada && entrada > 0) {
 	return new Response(new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' }), {
 		headers: {
 			'Content-Type': 'application/pdf',
-			'Content-Disposition': 'inline; filename="nota-servico.pdf"'
+			'Content-Disposition': 'inline; filename="comprovante.pdf"'
 		}
 	});
 }

@@ -1,4 +1,4 @@
-export interface ItemServico {
+export interface ItemVenda {
 	descricao: string;
 	valor: number;
 }
@@ -32,8 +32,8 @@ export interface BackupData {
 	versao: string;
 	dataBackup: string;
 	metadata: Metadata | null;
-	itens: ItemServico[];
-	itensPreDefinidos: ItemServico[];
+	itens: ItemVenda[];
+	itensPreDefinidos: ItemVenda[];
 	clientes: Cliente[];
 }
 

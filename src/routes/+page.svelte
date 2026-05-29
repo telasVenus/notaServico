@@ -8,13 +8,12 @@
 		carregarItens,
 		carregarItensPreDefinidos,
 		salvarItensPreDefinidos,
-		salvarClientes,
-		carregarClientes
+		salvarClientes
 	} from '$lib/store';
-	import type { ItemServico as ItemServicoBase, Metadata, Cliente as ClienteBase } from '$lib/types';
+	import type { ItemVenda as ItemVendaBase, Metadata, Cliente as ClienteBase } from '$lib/types';
 	import { getDataBRFormatada } from '$lib/helper/format-date.helper';
 
-	interface ItemServico extends ItemServicoBase {
+	interface ItemVenda extends ItemVendaBase {
 		id: number;
 	}
 
@@ -22,15 +21,15 @@
 		id: number;
 	}
 
-	let dataServico = $state(getDataBRFormatada({ format: 'ddMMyyyy' }));
+	let dataVenda = $state(getDataBRFormatada({ format: 'ddMMyyyy' }));
 	let novaDescricao = $state('');
 	let novoValor = $state('');
-	let itens: ItemServico[] = $derived([]);
-	let itensPreDefinidos: ItemServico[] = $state([]);
+	let itens: ItemVenda[] = $derived([]);
+	let itensPreDefinidos: ItemVenda[] = $state([]);
 	let proximoId = 1;
 	let nomeEmpresa = $state('Minha Empresa LTDA');
 	let contatoEmpresa = $state('(21) 98663-3011');
-	let servicoSelecionado = $state('');
+	let produtoSelecionado = $state('');
 	let metadata = $state<Metadata>(getMetadataDefault());
 	let clientes: Cliente[] = $state([]);
 	let nomeCliente = $state('');
@@ -83,9 +82,9 @@
 		// Listener para mudanças no localStorage (backup restaurado em outra aba)
 		const handleStorageChange = (e: StorageEvent) => {
 			if (
-				e.key === 'ordem-servicos-metadata' ||
-				e.key === 'ordem-servicos-itens' ||
-				e.key === 'ordem-servicos-itens-predefinidos'
+				e.key === 'ordem-produtos-metadata' ||
+				e.key === 'ordem-produtos-itens' ||
+				e.key === 'ordem-produtos-itens-predefinidos'
 			) {
 				recarregarTodosDados();
 			}
@@ -151,7 +150,7 @@
 
 		novaDescricao = '';
 		novoValor = '';
-		servicoSelecionado = '';
+		produtoSelecionado = '';
 	}
 
 const carregarClientesSheets = async () => {
@@ -210,11 +209,11 @@ function limparSelecaoCliente() {
     telefoneCliente = '';
 }
 
-	function selecionarServico() {
-		if (servicoSelecionado) {
-			const servicoData = JSON.parse(servicoSelecionado);
-			novaDescricao = servicoData.descricao;
-			novoValor = servicoData.valor.toString().replace('.', ',');
+	function selecionarProduto() {
+		if (produtoSelecionado) {
+			const produtoData = JSON.parse(produtoSelecionado);
+			novaDescricao = produtoData.descricao;
+			novoValor = produtoData.valor.toString().replace('.', ',');
 		}
 	}
 
@@ -249,7 +248,7 @@ function limparSelecaoCliente() {
 
 	async function gerarPDF() {
 		if (itensPreDefinidos.length === 0) {
-			alert('Adicione pelo menos um item de serviço');
+			alert('Adicione pelo menos um produto para gerar o comprovante');
 			return;
 		}
 
@@ -260,7 +259,7 @@ function limparSelecaoCliente() {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				dataServico,
+				dataVenda: dataVenda,
 				itens: itensPreDefinidos,
 				valorTotal,
 				metadata,
@@ -281,7 +280,7 @@ function limparSelecaoCliente() {
 		link.href = url;
 		// data +horário para evitar nome de arquivo duplicado ex: yymmdd-hhmmss
 		const dataTimeExtract = getDataBRFormatada({ format: 'ddMMyyHHmmss' });
-		link.download = `nota-servico-${dataTimeExtract}.pdf`;
+		link.download = `comprovante-JJR-${dataTimeExtract}.pdf`;
 		link.click();
 
 		// Liberar memória
@@ -306,7 +305,7 @@ function limparSelecaoCliente() {
 			<div class="bg-linear-to-r from-blue-600 to-blue-700 px-6 py-4">
 				<div class="flex items-center justify-between">
 					<div>
-						<h1 class="text-2xl font-bold text-white">Nota de Serviço</h1>
+						<h1 class="text-2xl font-bold text-white">Comprovante</h1>
 						<p class="mt-1 text-sm text-blue-100">{nomeEmpresa}</p>
 					</div>
 					<div class="flex flex-row gap-2">
@@ -345,15 +344,15 @@ function limparSelecaoCliente() {
 
 			<!-- Conteúdo -->
 			<div class="flex-1 space-y-4 overflow-y-auto p-6">
-				<!-- Data do Serviço -->
+				<!-- Data da Venda -->
 				<div>
-					<label for="dataServico" class="mb-1 block text-sm font-semibold text-gray-700">
-						Data do Serviço
+					<label for="dataVenda" class="mb-1 block text-sm font-semibold text-gray-700">
+						Data da Venda
 					</label>
 					<input
-						id="dataServico"
+						id="dataVenda"
 						type="text"
-						bind:value={dataServico}
+						bind:value={dataVenda}
 						class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
 						placeholder="DD/MM/AAAA"
 					/>
@@ -555,7 +554,7 @@ function limparSelecaoCliente() {
 			{/if}
 		</button>
 		<span class={`text-sm font-medium ${pagamentoEfetuado ? 'text-green-700' : 'text-red-600'}`}>
-			{pagamentoEfetuado ? 'Este serviço foi pago.' : 'Este serviço ainda não foi pago.'}
+			{pagamentoEfetuado ? 'Este produto foi pago.' : 'Este produto ainda não foi pago.'}
 		</span>
 	</div>
 </div>
@@ -563,7 +562,7 @@ function limparSelecaoCliente() {
 				<!-- Seção de Adicionar Item -->
 				<div id="tour-add-item" class="rounded-xl border border-blue-100 bg-blue-50 p-2">
 					<div class="flex items-center justify-between">
-						<h2 class="mb-3 text-lg font-bold text-gray-800">Adicionar Item de Serviço</h2>
+						<h2 class="mb-3 text-lg font-bold text-gray-800">Adicionar Produto</h2>
 						<span
 							class="inline-block rounded-full bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white"
 						>
@@ -584,12 +583,12 @@ function limparSelecaoCliente() {
 							</button>
 						</span>
 					</div>
-					<!-- visualizar lista de servicos salvos do localStorage -->
+					<!-- visualizar lista de produtos salvos do localStorage -->
 					{#if viewItenssalvos}
 						<!-- Pré-visualização dos Itens -->
 						{#if itens.length > 0}
 							<div class="mb-1 flex flex-col border border-gray-200 bg-gray-50">
-								<h2 class="m-1 text-center text-lg font-bold text-gray-800">Serviços Salvos</h2>
+								<h2 class="m-1 text-center text-lg font-bold text-gray-800">Produtos Salvos</h2>
 
 								<div class="flex flex-col overflow-hidden rounded-lg bg-white shadow-sm">
 									<!-- Cabeçalho da tabela -->
@@ -657,22 +656,22 @@ function limparSelecaoCliente() {
 						{/if}
 					{/if}
 
-					<!-- Select de Serviços Salvos -->
+					<!-- Select de Produtos Salvos -->
 					{#if itens.length > 0}
 						<div class="mb-3">
 							<label
-								for="servicoPredefinido"
+								for="produtoPredefinido"
 								class="mb-1 block text-sm font-semibold text-gray-700"
 							>
-								Selecionar Serviço da Lista
+								Selecionar Produto da Lista
 							</label>
 							<select
-								id="servicoPredefinido"
-								bind:value={servicoSelecionado}
-								onchange={selecionarServico}
+								id="produtoPredefinido"
+								bind:value={produtoSelecionado}
+								onchange={selecionarProduto}
 								class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
 							>
-								<option value="">-- Selecione um serviço --</option>
+								<option value="">-- Selecione um produto --</option>
 								{#each itens as item (item.id)}
 									<option value={JSON.stringify({ descricao: item.descricao, valor: item.valor })}>
 										{item.descricao}
@@ -685,7 +684,7 @@ function limparSelecaoCliente() {
 					<div class="mb-3 grid gap-3 md:grid-cols-2">
 						<div>
 							<label for="novaDescricao" class="mb-1 block text-sm font-semibold text-gray-700">
-								Descrição do Serviço
+								Descrição do Produto
 							</label>
 							<input
 								id="novaDescricao"
@@ -860,7 +859,7 @@ function limparSelecaoCliente() {
 						</svg>
 						<p class="font-medium text-yellow-800">Nenhum item adicionado ainda</p>
 						<p class="mt-1 text-sm text-yellow-600">
-							Adicione itens de serviço usando o formulário acima
+							Adicione produtos usando o formulário acima
 						</p>
 					</div>
 				{/if}
@@ -923,7 +922,7 @@ function limparSelecaoCliente() {
 							d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
 						/>
 					</svg>
-					Gerar Nota de Serviço
+					Gerar Comprovante
 				</button>
 			</div>
 

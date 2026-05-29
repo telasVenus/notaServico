@@ -5,7 +5,7 @@
 O sistema permite fazer backup e restaurar todos os dados da aplicação armazenados no localStorage, incluindo:
 
 - **Configurações da Empresa**: Dados da empresa, informações bancárias e chaves PIX
-- **Itens de Serviço**: Lista de itens de serviço em uso
+- **Produtos**: Lista de itens de serviço em uso
 - **Itens Pré-definidos**: Catálogo de itens pré-definidos
 
 ## Como Fazer Backup
@@ -13,7 +13,7 @@ O sistema permite fazer backup e restaurar todos os dados da aplicação armazen
 1. Acesse a página de **Configurações** da aplicação
 2. Role até a seção **Backup e Restauração** (seção laranja)
 3. Clique no botão **Baixar Backup**
-4. Um arquivo JSON será baixado automaticamente com o formato: `backup-ordem-servicos-YYYY-MM-DD.json`
+4. Um arquivo JSON será baixado automaticamente com o formato: `backup-comprovante-YYYY-MM-DD.json`
 
 ### Estrutura do Arquivo de Backup
 

@@ -12,21 +12,21 @@ const defaultOptions = {
 	progressText: 'Passo {{current}} de {{total}}'
 };
 
-// Tour para a tela principal (Gerador de Notas de Serviço)
+// Tour para a tela principal (Gerador de Comprovante de Pagamento)
 export function startHomeTour() {
 	const driverObj = driver({
 		...defaultOptions,
 		steps: [
 			{
 				popover: {
-					title: 'Bem-vindo(a) à Nota de Serviço!',
-					description: 'Este guia rápido vai te mostrar como gerar sua primeira nota. É bem simples!'
+					title: 'Bem-vindo(a)!',
+					description: 'Este guia rápido vai te mostrar como gerar seu primeiro comprovante. É bem simples!'
 				}
 			},
 			{
-				element: '#dataServico',
+				element: '#dataVenda',
 				popover: {
-					title: 'Data do Serviço',
+					title: 'Data da venda',
 					description: 'Aqui você define a data que aparecerá na nota gerada.',
 					side: 'bottom'
 				}
@@ -34,16 +34,16 @@ export function startHomeTour() {
 			{
 				element: '#tour-add-item',
 				popover: {
-					title: 'Adicionar Novo Serviço',
-					description: 'Preencha a descrição e o valor do serviço que você prestou.',
+					title: 'Adicionar Novo Produto',
+					description: 'Preencha a descrição e o valor do produto que você vendeu.',
 					side: 'top'
 				}
 			},
 			{
-				element: '#servicoPredefinido',
+				element: '#produtoPredefinido',
 				popover: {
-					title: 'Serviços Recorrentes',
-					description: 'Se você já adicionou serviços antes, pode selecioná-á-los rapidamente nesta lista.',
+					title: 'Produtos Recorrentes',
+					description: 'Se você já adicionou produtos antes, pode selecioná-á-los rapidamente nesta lista.',
 					side: 'top'
 				}
 			},
@@ -51,7 +51,7 @@ export function startHomeTour() {
 				element: '#btn-adicionar',
 				popover: {
 					title: 'Incluir na Nota',
-					description: 'Clique aqui para adicionar o serviço preenchido à sua nota atual.',
+					description: 'Clique aqui para adicionar o produto preenchido à sua nota atual.',
 					side: 'bottom'
 				}
 			},
@@ -59,7 +59,7 @@ export function startHomeTour() {
 				element: '#tour-itens-nota',
 				popover: {
 					title: 'Itens da Nota',
-					description: 'Aqui aparecerão todos os serviços que você adicionou, juntamente com o valor total.',
+					description: 'Aqui aparecerão todos os produtos que você adicionou, juntamente com o valor total.',
 					side: 'top'
 				}
 			},
@@ -67,7 +67,7 @@ export function startHomeTour() {
 				element: '#btn-gerar-pdf',
 				popover: {
 					title: 'Gerar PDF',
-					description: 'Quando terminar de adicionar os itens, clique aqui para baixar sua Nota de Serviço em PDF pronto para enviar ao cliente!',
+					description: 'Quando terminar de adicionar os itens, clique aqui para baixar seu Comprovante de Pagamento em PDF pronto para enviar ao cliente!',
 					side: 'top'
 				}
 			},

@@ -1,7 +1,7 @@
 {
-	"name": "Nota de Serviço - Ordem de Serviços",
-	"short_name": "Nota Serviço",
-	"description": "Sistema para geração de notas de serviço para técnicos de informática",
+	"name": "Comprovante de Venda",
+	"short_name": "Comprovante",
+	"description": "Sistema para geração de comprovantes de venda de produtos",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
@@ -27,7 +27,7 @@
 		{
 			"name": "Nova Nota",
 			"short_name": "Nova Nota",
-			"description": "Criar nova nota de serviço",
+			"description": "Criar novo comprovante de venda",
 			"url": "/",
 			"icons": [
 				{

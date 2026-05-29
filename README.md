@@ -1,6 +1,6 @@
-# 📝 Gerador de Nota de Serviço
+# 📝 Gerador de Comprovante de pagamento
 
-Sistema completo e moderno para gerar notas de serviço em PDF, desenvolvido como **Progressive Web App (PWA)** com interface intuitiva, persistência de dados e funcionalidade offline.
+Sistema completo e moderno para gerar comprovante de pagamentos em PDF, desenvolvido como **Progressive Web App (PWA)** com interface intuitiva, persistência de dados e funcionalidade offline.
 
 ## ✨ Funcionalidades Principais
 
@@ -15,9 +15,9 @@ Sistema completo e moderno para gerar notas de serviço em PDF, desenvolvido com
 - Cálculo automático do valor total
 - Download direto do arquivo PDF
 
-### 📝 Gestão de Itens de Serviço
+### 📝 Gestão de Produtos
 - **Adicionar itens manualmente**: Digite descrição e valor
-- **Selecionar serviços pré-definidos**: Dropdown com itens salvos anteriormente
+- **Selecionar produtos pré-definidos**: Dropdown com itens salvos anteriormente
 - **Remoção individual**: Exclua itens da lista facilmente
 - **Cálculo automático**: Total atualizado em tempo real
 - **Pré-visualização completa**: Visualize todos os itens na tabela antes de gerar PDF
@@ -48,12 +48,12 @@ Sistema completo de backup e restauração de dados:
 
 #### 🔄 Fazer Backup
 - **Exportação completa**: Salva todas as configurações e dados em arquivo JSON
-- **Nomenclatura automática**: `backup-ordem-servicos-YYYY-MM-DD.json`
+- **Nomenclatura automática**: `backup-comprovante-YYYY-MM-DD.json`
 - **Backup inclui**:
   - Configurações da empresa (nome, contato, subdescritivo)
   - Dados bancários (titular, CPF, banco, agência, conta)
   - Chaves PIX configuradas
-  - Lista de itens de serviço atuais
+  - Lista de produtos atuais
   - Catálogo de itens pré-definidos
 - **Versionamento**: Arquivo contém versão e timestamp do backup
 
@@ -62,14 +62,14 @@ Sistema completo de backup e restauração de dados:
 - **Validação automática**: Verifica integridade do arquivo antes de restaurar
 - **Restauração seletiva**: Escolha quais dados deseja restaurar:
   - ✅ Configurações da Empresa
-  - ✅ Itens de Serviço (com contagem)
+  - ✅ Produtos (com contagem)
   - ✅ Itens Pré-definidos (com contagem)
 - **Pré-visualização**: Veja informações do backup antes de confirmar
 - **Confirmação de segurança**: Aviso antes de substituir dados atuais
 - **Feedback completo**: Resumo dos itens restaurados com sucesso
 
 ### 💾 Persistência de Dados (localStorage)
-- **Itens pré-definidos**: Liste seus serviços mais comuns
+- **Itens pré-definidos**: Liste seus produtos mais comuns
 - **Configurações da empresa**: Salvas automaticamente
 - **Dados bancários**: Não precisa preencher toda vez
 - **Chaves PIX**: Mantidas entre sessões
@@ -100,10 +100,10 @@ Sistema completo de backup e restauração de dados:
 4. **Adicione chaves PIX**: Tipo e valor de cada chave
 5. **Clique em "Salvar Configurações"**
 
-### Gerando uma Nota de Serviço
-1. **Selecione ou digite a data** do serviço
-2. **Adicione itens de serviço**:
-   - **Opção 1**: Selecione um serviço pré-definido no dropdown
+### Gerando um Comprovante de Pagamento
+1. **Selecione ou digite a data** da venda
+2. **Adicione itens vendidos**:
+   - **Opção 1**: Selecione um item pré-definido no dropdown
    - **Opção 2**: Digite manualmente a descrição e valor
    - Clique em "Adicionar Item" ou pressione Enter
 3. **Revise a lista** de itens na tabela de pré-visualização
@@ -148,8 +148,8 @@ Sistema completo de backup e restauração de dados:
 3. Selecione o arquivo JSON de backup
 4. Na janela modal, escolha quais dados restaurar:
    - **Configurações da Empresa**: Dados da empresa, bancários e PIX
-   - **Itens de Serviço**: Lista atual de itens em uso
-   - **Itens Pré-definidos**: Catálogo de serviços salvos
+   - **Itens Vendidoso**: Lista atual de itens em uso
+   - **Itens Pré-definidos**: Catálogo de produtos salvos
 5. Confira as informações do backup (data e quantidades)
 6. Clique em **"Confirmar Restauração"**
 7. Confirme a operação no alerta de segurança
@@ -172,7 +172,7 @@ Sistema completo de backup e restauração de dados:
 ```sh
 # Clonar o repositório
 git clone <url-do-repositorio>
-cd projeto-ordem-servicos-mnt
+cd projeto-comprovante-mnt
 
 # Instalar dependências
 npm install
@@ -191,7 +191,7 @@ npm run preview
 ## 🗂️ Estrutura do Projeto
 
 ```
-projeto-ordem-servicos-mnt/
+projeto-comprovante-mnt/
 ├── src/
 │   ├── lib/
 │   │   ├── types.ts           # Interfaces TypeScript
@@ -229,8 +229,8 @@ projeto-ordem-servicos-mnt/
 
 ## 💡 Dicas de Uso
 
-### Serviços Pré-Definidos
-- Adicione seus serviços mais comuns na lista principal
+### Produtos Pré-Definidos
+- Adicione seus produtos mais comuns na lista principal
 - Use o dropdown para adicionar rapidamente ao criar notas
 - Os itens ficam salvos no navegador (localStorage)
 

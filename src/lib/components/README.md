@@ -10,8 +10,8 @@ Componente reutilizável para gerenciar backup e restauração de dados da aplic
 
 ### Backup
 - Gera arquivo JSON com todos os dados do localStorage
-- Download automático com nome formatado: `backup-ordem-servicos-YYYY-MM-DD.json`
-- Inclui: metadata da empresa, itens de serviço e itens pré-definidos
+- Download automático com nome formatado: `backup-comprovante-YYYY-MM-DD.json`
+- Inclui: metadata da empresa, produtos e itens pré-definidos
 
 ### Restauração
 - Upload de arquivo JSON
@@ -42,7 +42,7 @@ Modal responsivo que aparece após selecionar um arquivo:
 - **Informações do backup**: data e versão
 - **Checkboxes para seleção**:
   - ☑️ Configurações da Empresa
-  - ☑️ Itens de Serviço (com contador)
+  - ☑️ Produtos (com contador)
   - ☑️ Itens Pré-definidos (com contador)
 - **Aviso de segurança** (card amarelo)
 - **Botões de ação**: Cancelar | Restaurar
@@ -66,8 +66,8 @@ interface BackupData {
   versao: string;
   dataBackup: string;
   metadata: Metadata | null;
-  itens: ItemServico[];
-  itensPreDefinidos: ItemServico[];
+  itens: ItemVenda[];
+  itensPreDefinidos: ItemVenda[];
 }
 ```
 
@@ -205,7 +205,7 @@ Página é recarregada
     "chavesPix": [ ... ]
   },
   "itens": [
-    { "descricao": "Serviço 1", "valor": 100 }
+    { "descricao": "Produto 1", "valor": 100 }
   ],
   "itensPreDefinidos": [ ... ]
 }
