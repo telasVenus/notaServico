@@ -21,6 +21,11 @@
 		id: number;
 	}
 
+	interface Produto {
+		codigo: string;
+		descricao: string;
+	}
+
 	let dataVenda = $state(getDataBRFormatada({ format: 'ddMMyyyy' }));
 	let novaDescricao = $state('');
 	let novoValor = $state('');
@@ -54,6 +59,29 @@
 	});
 	let valorTotal = $derived(itensPreDefinidos.reduce((acc, item) => acc + item.valor, 0));
 	let saldoRestante = $derived(valorTotal - valorEntradaNumerico());
+	let produtos: Produto[] = $state([]);
+	let buscaProduto = $state('');
+	let mostrarSugestoesProduto = $state(false);
+	let produtosFiltrados = $derived(
+			buscaProduto.trim().length === 0
+					? []
+					: produtos.filter((p) =>
+							p.descricao.toLowerCase().includes(buscaProduto.toLowerCase()) ||
+							p.codigo.toLowerCase().includes(buscaProduto.toLowerCase())
+						).slice(0, 8)
+	);
+
+	const carregarProdutosSheets = async () => {
+		try {
+			const res = await fetch('/api/produtos');
+			if (res.ok) {
+				const dados = await res.json();
+				produtos = dados;
+			}
+		} catch (e) {
+			console.error('Erro ao carregar produtos:', e);
+		}
+	}
 
 
 	const reCarregarItens = () => {
@@ -73,6 +101,7 @@
 		reCarregarItens();
 		reCarregarItensPreDefinidos();
 		carregarClientesSheets();
+		carregarProdutosSheets();
 	};
 
 	// Carregar metadados da empresa e itens salvos ao iniciar
@@ -139,7 +168,7 @@
 				? itens.map(({ descricao, valor }) => ({ descricao, valor }))
 				: [{ descricao: novaDescricao.trim(), valor }];
 			salvarItens(itensSemId);
-			carregarClientesSheets();
+			reCarregarItens();
 		}
 
 		const itensPreDefinidosSemId = itensPreDefinidos.map(({ descricao, valor }) => ({
@@ -209,13 +238,25 @@ function limparSelecaoCliente() {
     telefoneCliente = '';
 }
 
-	function selecionarProduto() {
-		if (produtoSelecionado) {
-			const produtoData = JSON.parse(produtoSelecionado);
-			novaDescricao = produtoData.descricao;
-			novoValor = produtoData.valor.toString().replace('.', ',');
-		}
+function selecionarProduto() {
+	if (produtoSelecionado) {
+		novaDescricao = produtoSelecionado;
+		novoValor = ''; // deixa o usuário preencher o valor
 	}
+}
+
+function selecionarProdutoCombobox(produto: Produto) {
+    novaDescricao = produto.descricao;
+    buscaProduto = produto.codigo ? `[${produto.codigo}] ${produto.descricao}` : produto.descricao;
+    mostrarSugestoesProduto = false;
+    novoValor = '';
+}
+
+function limparSelecaoProduto() {
+    buscaProduto = '';
+    novaDescricao = '';
+    novoValor = '';
+}
 
 	function removerItem(id: number) {
 		itens = itens.filter((item) => item.id !== id);
@@ -656,29 +697,64 @@ function limparSelecaoCliente() {
 						{/if}
 					{/if}
 
-					<!-- Select de Produtos Salvos -->
-					{#if itens.length > 0}
-						<div class="mb-3">
-							<label
-								for="produtoPredefinido"
-								class="mb-1 block text-sm font-semibold text-gray-700"
-							>
-								Selecionar Produto da Lista
-							</label>
-							<select
-								id="produtoPredefinido"
-								bind:value={produtoSelecionado}
-								onchange={selecionarProduto}
-								class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
-							>
-								<option value="">-- Selecione um produto --</option>
-								{#each itens as item (item.id)}
-									<option value={JSON.stringify({ descricao: item.descricao, valor: item.valor })}>
-										{item.descricao}
-									</option>
-								{/each}
-							</select>
-						</div>
+					<!-- Combobox de busca de produto -->
+					{#if produtos.length > 0}
+							<div class="relative mb-3">
+									<label for="buscaProduto" class="mb-1 block text-sm font-semibold text-gray-700">
+											Buscar Produto
+									</label>
+									<div class="relative">
+											<input
+													id="buscaProduto"
+													type="text"
+													bind:value={buscaProduto}
+													onfocus={() => (mostrarSugestoesProduto = true)}
+													onblur={() => setTimeout(() => (mostrarSugestoesProduto = false), 150)}
+													oninput={() => (mostrarSugestoesProduto = true)}
+													class="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
+													placeholder="Digite o código ou descrição..."
+													autocomplete="off"
+											/>
+											{#if buscaProduto}
+													<button
+															onclick={limparSelecaoProduto}
+															class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+															title="Limpar"
+													>
+															<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+																	<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+															</svg>
+													</button>
+											{:else}
+													<svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+															<path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+													</svg>
+											{/if}
+									</div>
+
+									<!-- Lista de sugestões -->
+									{#if mostrarSugestoesProduto && produtosFiltrados.length > 0}
+											<ul class="absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+													{#each produtosFiltrados as produto}
+															<li>
+																	<button
+																			onmousedown={() => selecionarProdutoCombobox(produto)}
+																			class="flex w-full flex-col px-4 py-2 text-left transition-colors hover:bg-blue-50"
+																	>
+																			{#if produto.codigo}
+																					<span class="text-xs font-semibold text-blue-600">{produto.codigo}</span>
+																			{/if}
+																			<span class="font-medium text-gray-800">{produto.descricao}</span>
+																	</button>
+															</li>
+													{/each}
+											</ul>
+									{:else if mostrarSugestoesProduto && buscaProduto.trim().length > 0 && produtosFiltrados.length === 0}
+											<div class="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-lg">
+													<p class="text-sm text-gray-500">Nenhum produto encontrado para "<strong>{buscaProduto}</strong>"</p>
+											</div>
+									{/if}
+							</div>
 					{/if}
 
 					<div class="mb-3 grid gap-3 md:grid-cols-2">
@@ -692,7 +768,7 @@ function limparSelecaoCliente() {
 								bind:value={novaDescricao}
 								onkeypress={(e) => e.key === 'Enter' && adicionarItem()}
 								class="w-full rounded-lg border border-gray-300 px-4 py-2 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
-								placeholder="Ex: Instalação de SSD 480GB"
+								placeholder="Ex: Tela alambrado"
 							/>
 						</div>
 
