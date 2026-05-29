@@ -65,14 +65,27 @@ export async function POST({ request }) {
 	let currentY = height - 50;
 
 	// Carregar logo
-	let logoImage = null;
-	try {
-		const logoPath = join(process.cwd(), 'static', 'logo.png');
-		const logoBytes = readFileSync(logoPath);
-		logoImage = await pdfDoc.embedPng(logoBytes);
-	} catch (e) {
-		console.warn('Logo não encontrada, continuando sem logo.');
-	}
+let logoImage = null;
+try {
+    const possiveisCaminhos = [
+        join(process.cwd(), 'static', 'logo.png'),
+        join(process.cwd(), 'client', 'logo.png'),
+        join(process.cwd(), '.svelte-kit', 'output', 'client', 'logo.png'),
+        new URL('../../../../static/logo.png', import.meta.url).pathname
+    ];
+
+    for (const caminho of possiveisCaminhos) {
+        try {
+            const logoBytes = readFileSync(caminho);
+            logoImage = await pdfDoc.embedPng(logoBytes);
+            break;
+        } catch {
+            continue;
+        }
+    }
+} catch (e) {
+    console.warn('Logo não encontrada, continuando sem logo.');
+}
 
 	// Função auxiliar para desenhar texto
 	const drawText = (
@@ -121,7 +134,7 @@ export async function POST({ request }) {
 
 	// === CABEÇALHO ===
 drawRectangle(50, currentY - 30, width - 100, 30, { r: 0.2, g: 0.4, b: 0.8 });
-drawText('COMPROVANTE', width / 2 - 50, currentY - 18, {
+drawText('COMPROVANTE', width / 2 - 70, currentY - 20, {
     font: fontBold,
     size: 18,
     color: rgb(1, 1, 1)
@@ -138,18 +151,29 @@ if (logoImage) {
         height: logoDims.height
     });
     // Nome da empresa deslocado para direita da logo
-    drawText(metadata.dadosEmpresa.nomeEmpresa, 50 + logoDims.width + 10, currentY - 15, {
+    drawText(metadata.dadosEmpresa.nomeEmpresa, 50 + logoDims.width + 10, currentY - 25, {
         font: fontBold,
         size: 12
     });
     currentY -= Math.max(logoDims.height, 20) + 10;
+		currentY -= 20;
+		drawText(`Contato: ${metadata.dadosEmpresa.contato}`, 50, currentY, { size: 11 });
+		currentY -= 20;
+		drawText(`Data da Venda: ${dataVenda}`, 50, currentY, { font: fontBold, size: 11 });
+		currentY -= 25;
 } else {
     drawText(metadata.dadosEmpresa.nomeEmpresa, 50, currentY, {
         font: fontBold,
         size: 12
     });
     currentY -= 20;
+		currentY -= 20;
+		drawText(`Contato: ${metadata.dadosEmpresa.contato}`, 50, currentY, { size: 11 });
+		currentY -= 20;
+		drawText(`Data da Venda: ${dataVenda}`, 50, currentY, { font: fontBold, size: 11 });
+		currentY -= 25;
 }
+
 
 	// === DADOS DO CLIENTE ===
 	if (cliente) {
@@ -181,15 +205,15 @@ if (logoImage) {
     const statusColor = cliente.pago
         ? { r: 0.1, g: 0.6, b: 0.2 }
         : { r: 0.8, g: 0.2, b: 0.2 };
-
-    drawRectangle(width - 155, currentY - 48, 100, 22, statusColor);
-    drawText(statusText, width - 130, currentY - 41, {
+		
+    drawRectangle(width - 155, currentY - 78, 100, 22, statusColor);
+    drawText(statusText, width - 135, currentY - 71, {
         font: fontBold,
         size: 11,
         color: rgb(1, 1, 1)
     });
 
-    currentY -= 70;
+    currentY -= 80;
 }
 
 	// === LINHA SEPARADORA ===
